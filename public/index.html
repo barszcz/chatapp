@@ -2,8 +2,18 @@
   <head>
     <title>Chat App!</title>
     <script src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="./javascripts/chat.js"></script>
+    <script src="./javascripts/chat_ui.js"></script>
   </head>
   <body>
+    <h1>Yo sup</h1>
+    <section class="chatroom">
 
+    </section>
+    <form id="chat-input">
+      <input type="text" name="message" class="field">
+      <input type="submit" value="Send">
+    </form>
   </body>
 </html>
