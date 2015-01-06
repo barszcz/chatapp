@@ -5,7 +5,7 @@
   };
 
   var ChatUI = ChatApp.ChatUI = function () {
-    this.chat = new ChatApp.Chat(io());
+    this.chat = new ChatApp.Chat({socket: io(), ui: this});
     this.$chatRoom = $(".chatroom");
   }
 
@@ -21,15 +21,26 @@
   }
 
   ChatUI.prototype.displayMessage = function (data) {
-    this.$chatRoom.append(data.text);
+    var text = data.text;
+    var nick = data.nick || "System";
+    this.$chatRoom.append("<p><strong>" + nick + ": </strong>" + text + "</p>");
   }
 
   $(document).ready(function () {
     var chatUI = new ChatApp.ChatUI();
     console.log("i'm here");
     chatUI.chat.socket.on("broadcast", chatUI.displayMessage.bind(chatUI));
+    chatUI.chat.socket.on("nicknameChangeResult", chatUI.displayMessage.bind(chatUI));
     $("#chat-input").on("submit", function (event) {
-      chatUI.sendMessage(event);
+      event.preventDefault();
+      var message = chatUI.getMessage();
+      var command = message.match(/^\/(\w+) (\w+)/);
+      if (command) {
+        chatUI.chat.processCommand(command[1], command[2]);
+      } else {
+        chatUI.sendMessage(event);
+      };
+      $(".field").val('');
     });
   });
 
